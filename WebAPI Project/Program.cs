@@ -32,7 +32,7 @@ namespace WebAPI_Project
                         Email = "adly_ahmed@api.eg"
                     }
                 });
-                opt.IncludeXmlComments("D:\\ITI(PD&BI)\\API\\labs\\lab 2.xml");
+                opt.IncludeXmlComments("D:\\ITI(PD&BI)\\API\\labs\\lab 2\\read.xml");
 
             });
 
@@ -51,8 +51,8 @@ namespace WebAPI_Project
                     builder.AllowAnyOrigin();
                 });
             });
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            //builder.Services.AddEndpointsApiExplorer();
+            //builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
