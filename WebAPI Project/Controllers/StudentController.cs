@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPI_Project.DTO;
 using WebAPI_Project.Models;
 
 namespace WebAPI_Project.Controllers
@@ -13,13 +15,62 @@ namespace WebAPI_Project.Controllers
         {
             this.db = db;
         }
+        /// <summary>
+        /// get student all students
+        /// </summary>
+        /// <param name="page"> page number</param>
+        /// <param name="limit"> page limit </param>
+        /// <returns> list of students</returns>
+        /// <remarks>
+        /// request example:
+        ///  /api/student
+        /// </remarks>
+
 
         [HttpGet]
-
-        public List<Student> GetallStudents() 
+        public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            return db.Students.ToList();
+            var students = db.Students.Include(a => a.St_superNavigation).Include(a => a.Dept).ToList();
+
+            if (students == null || students.Count == 0)
+                return NotFound("There are no students.");
+
+            int totalPages = (int)Math.Ceiling((double)students.Count / limit);
+
+            if (page > totalPages)
+                return BadRequest("There is no page with that number.");
+
+            var result = students.Skip((page - 1) * limit).Take(limit);
+
+            var studentsDTOList = result.Select(s => CreateDTO(s)).ToList();
+
+            return Ok(studentsDTOList);
         }
+
+        [NonAction]
+        private StudentDepartmentDTO CreateDTO(Student student)
+        {
+            return new StudentDepartmentDTO
+            {
+                St_Id = student.St_Id,
+                St_name = student.St_Fname,
+                St_Age = student.St_Age,
+                Department_Name = new DepartmentDTO
+                {
+                    Id = student.Dept.Dept_Id,
+                    Name = student.Dept.Dept_Name,
+                    Location = student.Dept.Dept_Location
+                }
+            };
+        }
+
+
+        //[HttpGet]
+
+        //public List<Student> GetallStudents() 
+        //{
+        //    return db.Students.ToList();
+        //}
 
         [HttpGet("{id:int}")]
 
@@ -53,6 +104,8 @@ namespace WebAPI_Project.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
+        [Consumes("application/json")]
 
         public IActionResult addstudent(Student st) 
         {

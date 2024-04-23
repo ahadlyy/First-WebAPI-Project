@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI_Project.Models;
@@ -31,15 +32,19 @@ public partial class Student
 
     [ForeignKey("Dept_Id")]
     [InverseProperty("Students")]
+    //[JsonIgnore] // to ignore some data dure sending the data (but using this way stoping me from retrive relative data always"not the best way")
     public virtual Department Dept { get; set; }
 
     [InverseProperty("St_superNavigation")]
+    //[JsonIgnore] // u can't retrive it in all project not here only
     public virtual ICollection<Student> InverseSt_superNavigation { get; set; } = new List<Student>();
 
     [ForeignKey("St_super")]
     [InverseProperty("InverseSt_superNavigation")]
+    //[JsonIgnore] // also u can ignore properety like Dept_Id
     public virtual Student St_superNavigation { get; set; }
 
     [InverseProperty("St")]
+    //[JsonIgnore] // u can specify it's condition like "whenWritingDefualt" and "whenWritingNull" (it means preform it on these cases only)
     public virtual ICollection<Stud_Course> Stud_Courses { get; set; } = new List<Stud_Course>();
 }

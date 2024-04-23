@@ -18,10 +18,11 @@ namespace WebAPI_Project
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<ITIContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("iticon")));
+            builder.Services.AddDbContext<ITIContext>(op => op/*.UseLazyLoadingProxies()""*/.UseSqlServer(builder.Configuration.GetConnectionString("iticon")));
 
-            builder.Services.AddControllers().AddJsonOptions(x =>
-                            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            //setup the serialize setting to stop and retrive only the collected data when detecte a cycle refrence error
+            //builder.Services.AddControllers().AddJsonOptions(x =>
+            //                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles/*after RefrenceHandler u can spcify the depth of serialization by set serializes option to .maxdepth*/);
 
             var app = builder.Build();
 
