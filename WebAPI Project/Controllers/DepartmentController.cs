@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
+using System.Collections.Generic;
 using WebAPI_Project.DTO;
 using WebAPI_Project.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebAPI_Project.Controllers
 {
@@ -18,12 +19,19 @@ namespace WebAPI_Project.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Return list of all departments",
+            Description = "Get all departments with the number of students in each department",
+            OperationId = "GetAllDepartments"
+        )]
+        [SwaggerResponse(StatusCodes.Status200OK, "Received all departments", typeof(List<DepartmentDTO>))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The department data is invalid")]
 
         public IActionResult GetAllDepartments()
         {
             List<Department> departments = db.Departments.Include(d => d.Students).ToList();
-            List<DepartmentDTO> departmentDTOs = new List<DepartmentDTO>(); 
-            foreach(Department Dept in departments)
+            List<DepartmentDTO> departmentDTOs = new List<DepartmentDTO>();
+            foreach (Department Dept in departments)
             {
                 DepartmentDTO departmentDTO = new DepartmentDTO()
                 {
@@ -38,6 +46,13 @@ namespace WebAPI_Project.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Get department by ID",
+            Description = "Get department details by its ID",
+            OperationId = "GetDepartmentById"
+        )]
+        [SwaggerResponse(StatusCodes.Status200OK, "Received department details", typeof(DepartmentDTO))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Department not found")]
 
         public IActionResult GetDeptById(int id)
         {
@@ -61,6 +76,6 @@ namespace WebAPI_Project.Controllers
                 return Ok(departmentDTO);
             }
         }
-
     }
+
 }
