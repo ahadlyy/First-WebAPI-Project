@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebAPI Project</name>
+    </assembly>
+    <members>
+        <member name="M:WebAPI_Project.Controllers.StudentController.GetAll(System.Int32,System.Int32)">
+            <summary>
+            get student all students
+            </summary>
+            <param name="page"> page number</param>
+            <param name="limit"> page limit </param>
+            <returns> list of students</returns>
+            <remarks>
+            request example:
+             /api/student
+            </remarks>
+        </member>
+    </members>
+</doc>
