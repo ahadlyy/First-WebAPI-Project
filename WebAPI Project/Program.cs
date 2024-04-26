@@ -1,8 +1,11 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using System.Text.Json.Serialization;
 using WebAPI_Project.Models;
+using WebAPI_Project.WorkUnit;
 
 
 namespace WebAPI_Project
@@ -51,6 +54,23 @@ namespace WebAPI_Project
                     builder.AllowAnyOrigin();
                 });
             });
+            builder.Services.AddScoped<UnitOfWork>();
+
+            builder.Services.AddAuthentication(op => op.DefaultAuthenticateScheme = "myschema")
+                .AddJwtBearer("myschema",
+                    opt =>
+                    {
+                        string key = "This is my Secret Key -Abdo Rehan-";
+                        var SecKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
+                        opt.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            IssuerSigningKey = SecKey,
+                            ValidateLifetime = true,
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                    }
+                );
             //builder.Services.AddEndpointsApiExplorer();
             //builder.Services.AddSwaggerGen();
 
