@@ -9,25 +9,25 @@ namespace WebAPI_Project.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly ITIContext _context;
+        ITIContext db;
 
         public DepartmentsController(ITIContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            return await _context.Departments.ToListAsync();
+            return await db.Departments.ToListAsync();
         }
 
         // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await db.Departments.FindAsync(id);
 
             if (department == null)
             {
@@ -47,11 +47,11 @@ namespace WebAPI_Project.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(department).State = EntityState.Modified;
+            db.Entry(department).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,8 +73,8 @@ namespace WebAPI_Project.Controllers
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(Department department)
         {
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
+            db.Departments.Add(department);
+            await db.SaveChangesAsync();
 
             return CreatedAtAction("GetDepartment", new { id = department.Dept_Id }, department);
         }
@@ -83,21 +83,21 @@ namespace WebAPI_Project.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await db.Departments.FindAsync(id);
             if (department == null)
             {
                 return NotFound();
             }
 
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
+            db.Departments.Remove(department);
+            await db.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool DepartmentExists(int id)
         {
-            return _context.Departments.Any(e => e.Dept_Id == id);
+            return db.Departments.Any(e => e.Dept_Id == id);
         }
     }
 }

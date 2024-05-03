@@ -76,6 +76,69 @@ namespace WebAPI_Project.Controllers
                 return Ok(departmentDTO);
             }
         }
+
+        // PUT: api/Departments/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutDepartment(int id, Department department)
+        {
+            if (id != department.Dept_Id)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(department).State = EntityState.Modified;
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DepartmentExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Departments
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        {
+            db.Departments.Add(department);
+            await db.SaveChangesAsync();
+
+            return CreatedAtAction("GetDepartment", new { id = department.Dept_Id }, department);
+        }
+
+        // DELETE: api/Departments/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDepartment(int id)
+        {
+            var department = await db.Departments.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            db.Departments.Remove(department);
+            await db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool DepartmentExists(int id)
+        {
+            return db.Departments.Any(e => e.Dept_Id == id);
+        }
     }
 
 }
