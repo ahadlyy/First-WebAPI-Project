@@ -38,7 +38,7 @@ namespace WebAPI_Project.Controllers
                     Id = Dept.Dept_Id,
                     Name = Dept.Dept_Name,
                     Location = Dept.Dept_Location,
-                    StudentsNames = Dept.Students.Select(n => n.St_Fname).ToList()
+                    //StudentsNames = Dept.Students.Select(n => n.St_Fname).ToList()
                 };
                 departmentDTOs.Add(departmentDTO);
             }
@@ -71,7 +71,7 @@ namespace WebAPI_Project.Controllers
                 };
                 foreach (Student s in d.Students)
                 {
-                    departmentDTO.StudentsNames.Add(s.St_Fname);
+                    //departmentDTO.StudentsNames.Add(s.St_Fname);
                 }
                 return Ok(departmentDTO);
             }
